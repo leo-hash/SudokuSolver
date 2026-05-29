@@ -21,6 +21,13 @@ class TestField(unittest.TestCase):
         self.field2.delete_posibile(6)
         self.field2.delete_posibile(8)
 
+    def test_init(self):
+        field = Field(_number=1)
+
+        self.assertEqual(field.number, 1)
+        self.assertEqual(field.pos_number, {1})
+
+
     def test_is_posibile(self):
         self.assertFalse(self.field1.is_posibile(1))
         self.assertFalse(self.field1.is_posibile(3))
@@ -71,6 +78,7 @@ class TestField(unittest.TestCase):
 
         self.field3.number = 1
         self.assertEqual(self.field3.number, 1)
+        self.assertEqual(self.field3.pos_number, {1})
 
         with self.assertRaises(ValueError):
             self.field1.number = 1
@@ -85,7 +93,23 @@ class TestField(unittest.TestCase):
         self.assertEqual(self.field2.number, 3)
 
     def test_set_pos_number(self):
-        raise NotImplementedError()
+        set1 = {1, 3, 5, 7, 9}
+        set2 = {2, 4, 6, 8}
+        set3 = {0}
+        set4 = {10}
+
+        self.field3.pos_number = set1
+        self.assertEqual(self.field3.pos_number, set1)
+
+        self.field3.pos_number = set2
+        self.assertEqual(self.field3.pos_number, set2)
+
+        with self.assertRaises(ValueError):
+            self.field3.pos_number = set3
+
+        with self.assertRaises(ValueError):
+            self.field3.pos_number = set4
+
 
 if __name__ == '__main__':
     unittest.main()

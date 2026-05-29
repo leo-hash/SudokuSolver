@@ -17,6 +17,7 @@ class Field:
     def __post_init__(self):
         if self._number is not None:
             check_value(self._number)
+            self.pos_number = {self._number}
 
     def is_posibile(self, value: int) -> bool:
         check_value(value)
@@ -39,11 +40,13 @@ class Field:
 
     @number.setter
     def number(self, value: int):
-        # TODO: set all pos_numbers except self.number to 0 ?
         check_value(value)
         if self._pos_number[value-1] == 0:
             raise ValueError(f"Number {value} not in List of possible numbers")
+
         self._number = value
+        # set all pos_numbers except self.number to 0
+        self.pos_number = {value}
 
     @property
     def pos_number(self) -> set[int]:
@@ -55,12 +58,12 @@ class Field:
 
     @pos_number.setter
     def pos_number(self, value: set[int]):
+        self._pos_number = bitarray('000000000')
         for cur in value:
             check_value(cur)
-            self._pos_number[cur] = 1
+            self._pos_number[cur-1] = 1
 
 
 if __name__ == '__main__':
     field = Field(_number=1)
-
-    print(f"An instance of Field has a Size of {asizeof.asizeof(field)} Bytes.")
+    print(f"An instance of Field has a size of {asizeof.asizeof(field)} bytes.")

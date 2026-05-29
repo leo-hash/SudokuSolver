@@ -1,10 +1,9 @@
 import math
 from typing import Tuple
 from dataclasses import dataclass, field
-
 from pympler import asizeof
 
-from field import Field
+from src.field import Field
 
 
 
@@ -29,22 +28,23 @@ class SudokuGrid:
         if col < 0 or col > 8:
             raise ValueError(f'Field Collum {col} is out of bounds')
 
-        self.grid[row][col] = Field(value)
+        self.grid[row][col].number = value
         self.propagate(row, col, value)
 
     def propagate(self, row: int, col: int, value: int):
-        # TODO: skip all fields, which already have a number
+        # skip all fields, which already have a number
         for i in range(9):
-            if i != row:
+            if i != row and self.grid[i][col].number is None:
                 self.grid[i][col].delete_posibile(value)
-            if i != col:
+            if i != col and self.grid[row][i].number is None:
                 self.grid[row][i].delete_posibile(value)
 
         # propagate quadrant
         quad_row, quad_col = self.get_quadrant_index(row, col)
         for i in range(3):
             for j in range(3):
-                if quad_row + i != row and quad_col + j != col:
+                if (quad_row + i != row and quad_col + j != col and
+                        self.grid[quad_row + i][quad_col + j].number is None):
                     self.grid[quad_row + i][quad_col + j].delete_posibile(value)
 
 
@@ -86,4 +86,4 @@ class SudokuGrid:
 
 if __name__ == '__main__':
     grid = SudokuGrid()
-    print(f"An instance of SudokuGrid has a Size of {asizeof.asizeof(grid)} Bytes.")
+    print(f"An instance of SudokuGrid has a size of {asizeof.asizeof(grid)} bytes.")
