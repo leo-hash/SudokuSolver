@@ -9,8 +9,9 @@ using backtracking with Forward Checking
 
 First Fail Principle: variables with most constrains should be tested first
 
-1. Degree Heuristic:
-2. Minimum Remaining Values:
+Minimum Remaining Values: prefer variables with the least remaining possible values, 
+because they have the least degrees of freedom and are the most likely to fail. 
+Therefore, faster backtracking in a hopeless situation. 
 
 ### Forward Checking:
    - store possible values for each field 

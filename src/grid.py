@@ -11,8 +11,6 @@ class Contradiction(Exception):
     pass
 
 
-
-
 @dataclass(slots=True)
 class SudokuGrid:
     grid: list[list[Field]]  = field(
@@ -27,7 +25,7 @@ class SudokuGrid:
             for col in range(9):
                 self.grid[row][col] = Field()
 
-    def set_new_value(self, row: int, col: int, value: int):
+    def set_new_value(self, row: int, col: int, value: int) -> set[tuple[int, int, int]]:
         if row < 0 or row > 8:
             raise ValueError(f'Field row {row} is out of bounds')
 
@@ -38,45 +36,63 @@ class SudokuGrid:
             raise Contradiction()
 
         self.grid[row][col].number = value
-        self.propagate(row, col, value)
-
-    def propagate(self, row: int, col: int, value: int):
-        single_pos = set()
-        # skip all fields, which already have a number
-        for i in range(9):
-            if i != row and self.grid[i][col].number is None:
-                single_pos.add(self.check_propagating_values(i, col, value))
-            if i != col and self.grid[row][i].number is None:
-                single_pos.add(self.check_propagating_values(row, i, value))
-
-        # propagate quadrant
-        quad_row, quad_col = self.get_quadrant_index(row, col)
-        start_row, start_col = self.get_field_index(quad_row, quad_col)
-        for i in range(3):
-            for j in range(3):
-                if (start_row + i != row and start_col + j != col and
-                        self.grid[start_row + i][start_col + j].number is None):
-                    single_pos.add(self.check_propagating_values(start_row + i, start_col + j, value))
+        return self.propagate(row, col, value)
 
 
-    def check_propagating_values(self, row: int, col: int, value) -> Tuple[int, int, int] | None:
-        self.grid[row][col].delete_posibile(value)
+    def propagate(self, row: int, col: int, value: int) -> set[tuple[int, int, int]]:
+        # fields with only one possible value for aggressive Forward Checking
+        forward: set[tuple[int, int, int]] = set()
 
-        if self.grid[row][col].possible_count() == 0:
+        for r, c in self._affected_fields(row, col):
+            if (result := self._propagate_field(r, c, value)) is not None:
+                forward.add(result)
+
+        return forward
+
+
+    def _propagate_field(self, row: int, col: int, value: int) -> Tuple[int, int, int] | None:
+        curr_field = self.grid[row][col]
+        curr_field.delete_posibile(value)
+        count = curr_field.possible_count()
+
+        if count == 0:
             raise Contradiction()
 
-        if self.grid[row][col].possible_count() == 1:
-            # TODO: stupid solution, maybe field should know its coordinates
-            return row, col, next(iter(self.grid[row][col].pos_number))
+        if count == 1:
+            return row, col, next(iter(curr_field.pos_number))
+
         return None
 
-    """
-    Calculates the quadrant-coordinates, which belong to the given grid-coordinates. A quadrant shall be a 3x3 subgrid, 
-    a sudoku has 9 quadrants.
-    
-    :returns 
-    (int,int): coordinates of the quadrant, values between 0 and 2
-    """
+    def _affected_fields(self, row: int, col: int) -> set[tuple[int, int]]:
+        seen = set()
+
+        # row
+        for r in range(9):
+            if r != row:
+                seen.add((r, col))
+
+        # collum
+        for c in range(9):
+            if c != col:
+                seen.add((row, c))
+
+        # quadrant
+        quad_row, quad_col = self.get_quadrant_index(row, col)
+        start_row, start_col = self.get_field_index(quad_row, quad_col)
+
+        for i in range(start_row, start_row + 3):
+            for j in range(start_col, start_col + 3):
+                if (i, j) != (row, col):
+                    seen.add((i, j))
+
+        # filter None out
+        result = set()
+        for r, c in seen:
+            if self.grid[r][c].number is None:
+                result.add((r, c))
+
+        return result
+
     @staticmethod
     def get_quadrant_index(row_field: int, col_field: int) -> Tuple[int, int]:
         if row_field < 0 or row_field > 8:
@@ -103,6 +119,29 @@ class SudokuGrid:
             raise ValueError(f'Quadrant Collum {col_quad} is out of bounds')
 
         return row_quad * 3, col_quad * 3
+
+
+    def __str__(self):
+        rows = []
+
+        for row in range(9):
+            values = []
+
+            for col in range(9):
+                number = self.grid[row][col].number
+
+                values.append(str(number) if number is not None else ".")
+
+                if col in (2, 5):
+                    values.append("|")
+
+            rows.append(" ".join(values))
+
+            if row in (2, 5):
+                rows.append("------+-------+------")
+
+        return "\n".join(rows)
+
 
 if __name__ == '__main__':
     grid = SudokuGrid()

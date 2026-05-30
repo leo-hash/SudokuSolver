@@ -70,6 +70,8 @@ class Field:
             check_value(cur)
             self._pos_number[cur-1] = 1
 
+    def __str__(self):
+        return f"{self.number}"
 
 if __name__ == '__main__':
     field = Field(_number=1)
