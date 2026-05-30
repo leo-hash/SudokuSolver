@@ -6,6 +6,12 @@ from pympler import asizeof
 from src.field import Field
 
 
+class Contradiction(Exception):
+    """A contradiction was found during constraint propagation. Backtracking needed."""
+    pass
+
+
+
 
 @dataclass(slots=True)
 class SudokuGrid:
@@ -28,27 +34,41 @@ class SudokuGrid:
         if col < 0 or col > 8:
             raise ValueError(f'Field Collum {col} is out of bounds')
 
+        if value not in self.grid[row][col].pos_number:
+            raise Contradiction()
+
         self.grid[row][col].number = value
         self.propagate(row, col, value)
 
     def propagate(self, row: int, col: int, value: int):
+        single_pos = set()
         # skip all fields, which already have a number
         for i in range(9):
             if i != row and self.grid[i][col].number is None:
-                self.grid[i][col].delete_posibile(value)
+                single_pos.add(self.check_propagating_values(i, col, value))
             if i != col and self.grid[row][i].number is None:
-                self.grid[row][i].delete_posibile(value)
+                single_pos.add(self.check_propagating_values(row, i, value))
 
         # propagate quadrant
         quad_row, quad_col = self.get_quadrant_index(row, col)
+        start_row, start_col = self.get_field_index(quad_row, quad_col)
         for i in range(3):
             for j in range(3):
-                if (quad_row + i != row and quad_col + j != col and
-                        self.grid[quad_row + i][quad_col + j].number is None):
-                    self.grid[quad_row + i][quad_col + j].delete_posibile(value)
+                if (start_row + i != row and start_col + j != col and
+                        self.grid[start_row + i][start_col + j].number is None):
+                    single_pos.add(self.check_propagating_values(start_row + i, start_col + j, value))
 
 
+    def check_propagating_values(self, row: int, col: int, value) -> Tuple[int, int, int] | None:
+        self.grid[row][col].delete_posibile(value)
 
+        if self.grid[row][col].possible_count() == 0:
+            raise Contradiction()
+
+        if self.grid[row][col].possible_count() == 1:
+            # TODO: stupid solution, maybe field should know its coordinates
+            return row, col, next(iter(self.grid[row][col].pos_number))
+        return None
 
     """
     Calculates the quadrant-coordinates, which belong to the given grid-coordinates. A quadrant shall be a 3x3 subgrid, 

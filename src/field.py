@@ -34,6 +34,13 @@ class Field:
         check_value(value)
         self._pos_number[value-1] = 0
 
+    def possible_count(self) -> int:
+        count = 0
+        for num in self._pos_number:
+            if num == 1:
+                count += 1
+        return count
+
     @property
     def number(self):
         return self._number

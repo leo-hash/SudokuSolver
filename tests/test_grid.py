@@ -10,7 +10,36 @@ class TestGrid(unittest.TestCase):
         self.grid2 = SudokuGrid()
 
     def test_set_new_values(self):
-        raise NotImplementedError()
+        # TODO: test multiple values, test diagonals (0,8), (8,0)
+        # TODO: test value not in pos_number
+        self.grid1.set_new_value(8, 8, 9)
+
+        self.assertEqual(self.grid1.grid[8][8].number, 9)
+        self.assertEqual(self.grid1.grid[8][8].pos_number, {9})
+
+        for i in range(0, 8):
+            self.assertEqual(self.grid1.grid[i][8].pos_number, {1, 2, 3, 4, 5, 6, 7, 8})
+            self.assertEqual(self.grid1.grid[8][i].pos_number, {1, 2, 3, 4, 5, 6, 7, 8})
+
+        quad = 6
+        for i in range(3):
+            for j in range(3):
+                if i == 2 and j == 2:
+                    continue
+                self.assertEqual(self.grid1.grid[quad+j][quad+i].pos_number, {1, 2, 3, 4, 5, 6, 7, 8}, f"Field {quad+i},{quad+j} don't match")
+
+        with self.assertRaises(ValueError):
+            self.grid1.set_new_value(9, 8, 9)
+
+        with self.assertRaises(ValueError):
+            self.grid1.set_new_value(-1, 8, 9)
+
+        with self.assertRaises(ValueError):
+            self.grid1.set_new_value(8, 9, 9)
+
+        with self.assertRaises(ValueError):
+            self.grid1.set_new_value(8, -1, 9)
+
 
     def test_propagate(self):
         self.grid1.propagate(0,0,1)
@@ -72,6 +101,8 @@ class TestGrid(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             self.grid1.get_field_index(0, 3)
+
+
 
 if __name__ == '__main__':
     unittest.main()
