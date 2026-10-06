@@ -25,10 +25,9 @@ class Field:
             return True
         return False
 
-    def set_posibile(self, value: int):
-        # Necessary? ideally, pos_numbers should only get smaller
-        # and backtracking to old state gets grid from stack
-        raise NotImplementedError()
+    def add_posibile(self, value: int):
+        check_value(value)
+        self._pos_number[value-1] = 1
 
     def delete_posibile(self, value: int):
         check_value(value)
@@ -53,7 +52,14 @@ class Field:
 
         self._number = value
         # set all pos_numbers except self.number to 0
-        self.pos_number = {value}
+        # NO! don't do that, otherwise it's hard to calculate pos_number in deleter
+        # self.pos_number = {value}
+
+    @number.deleter
+    def number(self):
+        value = self._number
+        self._number = None
+        self.add_posibile(value)
 
     @property
     def pos_number(self) -> set[int]:
@@ -72,6 +78,9 @@ class Field:
 
     def __str__(self):
         return f"{self.number}"
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.number}, {self.pos_number})"
 
 if __name__ == '__main__':
     field = Field(_number=1)

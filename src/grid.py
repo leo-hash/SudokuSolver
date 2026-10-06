@@ -7,7 +7,7 @@ from src.field import Field
 
 
 class Contradiction(Exception):
-    """A contradiction was found during constraint propagation. Backtracking needed."""
+    """A contradiction was found during constraint propagation. Backtracking necessary."""
     pass
 
 

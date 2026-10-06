@@ -20,4 +20,9 @@ Therefore, faster backtracking in a hopeless situation.
    - **Aggressive Forward Checking:** if only 
    one value possible, propagate til end
 
+### Terminology
+
+Field: One small Field in a Sudoku-Grid with possible values of 1 to 9.
+
+Quadrant: 3x3 Fields, each digit can only occur once in a Quadrant. Each Grid consists of 3x3 Quadrants.  
    

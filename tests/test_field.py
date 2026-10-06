@@ -9,6 +9,7 @@ class TestField(unittest.TestCase):
         self.field1 = Field()
         self.field2 = Field()
         self.field3 = Field()
+        self.field4 = Field()
 
         self.field1.delete_posibile(1)
         self.field1.delete_posibile(3)
@@ -20,6 +21,16 @@ class TestField(unittest.TestCase):
         self.field2.delete_posibile(4)
         self.field2.delete_posibile(6)
         self.field2.delete_posibile(8)
+
+        self.field4.delete_posibile(1)
+        self.field4.delete_posibile(2)
+        self.field4.delete_posibile(3)
+        self.field4.delete_posibile(4)
+        self.field4.delete_posibile(5)
+        self.field4.delete_posibile(6)
+        self.field4.delete_posibile(7)
+        self.field4.delete_posibile(8)
+        self.field4.delete_posibile(9)
 
     def test_init(self):
         field = Field(_number=1)
@@ -68,6 +79,19 @@ class TestField(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             self.field3.delete_posibile(10)
+
+    def test_set_posibile(self):
+        for i in range(1, 10):
+            self.assertFalse(self.field4.is_posibile(i))
+            self.field4.add_posibile(i)
+            self.assertTrue(self.field4.is_posibile(i))
+
+        with self.assertRaises(ValueError):
+            self.field3.add_posibile(0)
+
+        with self.assertRaises(ValueError):
+            self.field3.add_posibile(10)
+
 
 
     def test_set_number(self):

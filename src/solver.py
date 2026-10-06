@@ -1,4 +1,5 @@
 import time
+import random
 
 from src.grid import SudokuGrid, Contradiction
 from copy import deepcopy
@@ -11,6 +12,8 @@ class SudokuSolver:
         self.afc = False
         # flag to activate Minimum Remaining Value Heuristic
         self.mrv = True
+        # flag to activate randomisation of pos_numbers in create_all_assignments() for generating Sudoku puzzles
+        self.random_order = False
 
 
     """
@@ -19,7 +22,7 @@ class SudokuSolver:
     only a successive state is generated and solved with a recursive call
     """
     def solve_recursive(self, sudoku: SudokuGrid):
-        pass
+        raise NotImplementedError
 
 
     def solve(self, sudoku: SudokuGrid):
@@ -68,14 +71,19 @@ class SudokuSolver:
     def create_all_assignments(self, sudoku: SudokuGrid, row, col) -> list[SudokuGrid]:
         new_states = list[SudokuGrid]()
 
-        for num in sudoku.grid[row][col].pos_number:
+        num_list = list(sudoku.grid[row][col].pos_number)
+        if self.random_order:
+            # shuffle num_list to create a different Sudoku puzzle each time (for puzzle generation)
+            random.shuffle(num_list)
+
+        for num in num_list:
             new_sudoku = deepcopy(sudoku)
 
             try:
                 forward = new_sudoku.set_new_value(row, col, num)
                 self.aggressive_forward_checking(forward)
             except Contradiction:
-                # Backtracking
+                # Backtracking -> skip current digit -> previous state with different digit chosen
                 continue
 
             new_states.append(new_sudoku)
@@ -94,11 +102,12 @@ if __name__ == '__main__':
 
     sudoku_grid = SudokuGrid()
     solver = SudokuSolver()
+    solver.random_order = True
     sol = solver.solve(sudoku_grid)
 
     if sol is not None:
         print("Solution found")
-        print(sol.__str__())
+        print(sol)
     else:
         print("Solution not found")
 
