@@ -1,19 +1,19 @@
 import time
 import random
 
-from src.grid import SudokuGrid, Contradiction
+from src.engine.grid import SudokuGrid, Contradiction
 from copy import deepcopy
 
 
 class SudokuSolver:
 
-    def __init__(self):
+    def __init__(self, random_order=False, mrv=True, afc=False):
         # flag to activate aggressive forward checking
-        self.afc = False
+        self.afc = afc
         # flag to activate Minimum Remaining Value Heuristic
-        self.mrv = True
+        self.mrv = mrv
         # flag to activate randomisation of pos_numbers in create_all_assignments() for generating Sudoku puzzles
-        self.random_order = False
+        self.random_order = random_order
 
 
     """

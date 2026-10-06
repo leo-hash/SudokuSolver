@@ -1,6 +1,6 @@
 import unittest
 
-from src.grid import SudokuGrid
+from src.engine.grid import SudokuGrid
 
 
 class TestGrid(unittest.TestCase):
@@ -15,7 +15,7 @@ class TestGrid(unittest.TestCase):
         self.grid1.set_new_value(8, 8, 9)
 
         self.assertEqual(self.grid1.grid[8][8].number, 9)
-        self.assertEqual(self.grid1.grid[8][8].pos_number, {1,2,3,4,5,6,7,8,9})
+        self.assertEqual(self.grid1.grid[8][8].pos_number, {9})
 
         for i in range(0, 8):
             self.assertEqual(self.grid1.grid[i][8].pos_number, {1, 2, 3, 4, 5, 6, 7, 8})

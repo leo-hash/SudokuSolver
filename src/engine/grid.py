@@ -3,7 +3,7 @@ from typing import Tuple
 from dataclasses import dataclass, field
 from pympler import asizeof
 
-from src.field import Field
+from src.engine.field import Field
 
 
 class Contradiction(Exception):
@@ -24,6 +24,7 @@ class SudokuGrid:
         for row in range(9):
             for col in range(9):
                 self.grid[row][col] = Field()
+
 
     def set_new_value(self, row: int, col: int, value: int) -> set[tuple[int, int, int]]:
         if row < 0 or row > 8:

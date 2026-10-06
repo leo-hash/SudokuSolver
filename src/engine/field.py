@@ -52,14 +52,12 @@ class Field:
 
         self._number = value
         # set all pos_numbers except self.number to 0
-        # NO! don't do that, otherwise it's hard to calculate pos_number in deleter
-        # self.pos_number = {value}
+        self.pos_number = {value}
 
     @number.deleter
     def number(self):
-        value = self._number
+        # don't change pos_number, because reverse propagation doesn't work
         self._number = None
-        self.add_posibile(value)
 
     @property
     def pos_number(self) -> set[int]:
@@ -81,6 +79,7 @@ class Field:
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.number}, {self.pos_number})"
+
 
 if __name__ == '__main__':
     field = Field(_number=1)
