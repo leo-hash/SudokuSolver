@@ -9,6 +9,7 @@ def check_value(value):
 
 @dataclass(slots=True)
 class Field:
+    _is_fixed: bool = False
     _number: int | None = None
     _pos_number: bitarray = field(
         default_factory=lambda: bitarray('111111111')
@@ -41,6 +42,14 @@ class Field:
         return count
 
     @property
+    def is_fixed(self) -> bool:
+        return self._is_fixed
+
+    @is_fixed.setter
+    def is_fixed(self, value: bool):
+        self._is_fixed = value
+
+    @property
     def number(self):
         return self._number
 
@@ -51,6 +60,7 @@ class Field:
             raise ValueError(f"Number {value} not in List of possible numbers")
 
         self._number = value
+        self._is_fixed = True
         # set all pos_numbers except self.number to 0
         self.pos_number = {value}
 
@@ -58,6 +68,7 @@ class Field:
     def number(self):
         # don't change pos_number, because reverse propagation doesn't work
         self._number = None
+        self._is_fixed = False
 
     @property
     def pos_number(self) -> set[int]:
@@ -82,5 +93,8 @@ class Field:
 
 
 if __name__ == '__main__':
-    field = Field(_number=1)
+    field = Field()
+    field.number = 1
     print(f"An instance of Field has a size of {asizeof.asizeof(field)} bytes.")
+
+    print(field.is_fixed)

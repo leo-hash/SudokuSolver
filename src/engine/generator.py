@@ -5,13 +5,15 @@ from src.engine.grid import SudokuGrid
 from src.engine.solver import SudokuSolver
 
 
+# don't really need a class, just static functions
+
 class SudokuGenerator:
     def __init__(self):
         # number of deleted fields
         self.difficulty = 45
 
     def generate(self):
-        sudoku = self.create_full_grid()
+        sudoku = self._create_full_grid()
         sudoku = self.delete_fields(sudoku)
         return sudoku
 
@@ -24,6 +26,8 @@ class SudokuGenerator:
         field_list = list(itertools.chain.from_iterable(sudoku.grid))
         random.shuffle(field_list)
 
+        # TODO: test for partially set sudoku grids and
+
         for i in range(self.difficulty):
             field = field_list.pop()
             del field.number
@@ -32,14 +36,14 @@ class SudokuGenerator:
 
 
     @staticmethod
-    def create_full_grid():
+    def _create_full_grid():
         sudoku = SudokuGrid()
         solver = SudokuSolver(random_order=True)
         return solver.solve(sudoku)
 
 
     @staticmethod
-    def print_pos_number(self, sudoku: SudokuGrid):
+    def _print_pos_number(self, sudoku: SudokuGrid):
         for i in range(9):
             for j in range(9):
                 print(sudoku.grid[i][j].pos_number, end="")

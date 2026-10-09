@@ -1,3 +1,4 @@
+pyside6
 bitarray==3.8.1
 coverage==7.14.1
 Pympler==1.1
