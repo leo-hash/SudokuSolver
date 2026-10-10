@@ -40,12 +40,22 @@ ApplicationWindow {
                     property int column: index % 9
 
                     property int cellValue: window.frontend.getValue(row, column)
+                    property bool invalidInput: false
                     property bool fixed:
                         window.frontend.isFixed(row, column)
 
+                    id: cell
                     Layout.preferredWidth: 50
                     Layout.preferredHeight: 50
 
+                    Timer {
+                        id: invalidInputTimer
+                        // 1.5 seconds
+                        interval: 1500
+                        repeat: false
+
+                        onTriggered: cell.invalidInput = false
+                    }
 
                     Connections {
                         target: window.frontend
@@ -55,16 +65,29 @@ ApplicationWindow {
                                 cellValue = value
                             }
                         }
+
+                        function onInvalidNumberInput(changedRow, changedColumn, err_message) {
+                            if (changedRow === row && changedColumn === column) {
+                                cell.invalidInput = true
+                                // reset timer
+                                invalidInputTimer.stop()
+                                invalidInputTimer.start()
+                            }
+                        }
                     }
 
                     color: {
+                        if (fixed) {
+                            return "#eeeeee"
+                        }
+
+                        if (invalidInput){
+                            return "#FFB3B3"
+                        }
+
                         if (row === selectedRow &&
                             column === selectedColumn) {
                             return "#cce5ff"
-                        }
-
-                        if (fixed) {
-                            return "#eeeeee"
                         }
 
                         return "white"

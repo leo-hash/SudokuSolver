@@ -11,8 +11,11 @@ from src.engine.generator import SudokuGenerator
 
 class SudokuFrontend(QObject):
 
-    # signal to update GUI
+    # signal to update GUI (row, colum, value)
     cellChanged = Signal(int, int, int)
+
+    # error message (row, column, err_message)
+    invalidNumberInput = Signal(int, int, str)
 
 
     def __init__(self):
@@ -43,16 +46,19 @@ class SudokuFrontend(QObject):
 
         if self._sudoku.grid[row][column].is_fixed:
             print("Can't set Field, because it is fixed")
+            self.invalidNumberInput.emit(row, column, "Can't set Field, because it is fixed")
             return False
 
         if value not in self._sudoku.grid[row][column].pos_number:
             print("Wrong Number entered")
+            self.invalidNumberInput.emit(row, column, "Wrong Number entered")
             return False
 
         try:
             self._sudoku.grid[row][column].number = value
         except ValueError:
             print("Value entered is not a number between 1 and 9")
+            self.invalidNumberInput.emit(row, column, "Value entered is not a number between 1 and 9")
             return False
 
         # make changes in QML
