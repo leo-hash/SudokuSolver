@@ -10,8 +10,6 @@ class TestGrid(unittest.TestCase):
         self.grid2 = SudokuGrid()
 
     def test_set_new_values(self):
-        # TODO: test multiple values, test diagonals (0,8), (8,0)
-        # TODO: test value not in pos_number
         self.grid1.set_new_value(8, 8, 9)
 
         self.assertEqual(self.grid1.grid[8][8].number, 9)
@@ -102,6 +100,36 @@ class TestGrid(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.grid1.get_field_index(0, 3)
 
+
+    def test_from_string(self):
+        sudoku_str = '''. . . | . . 2 | 4 . .
+. 6 . | 4 7 . | 5 . 9
+7 . 4 | . . . | 8 . .
+------+-------+------
+4 2 . | . 3 8 | . 5 1
+. . . | 2 . 6 | 7 9 .
+. . . | 9 . 4 | . 2 .
+------+-------+------
+8 . 2 | . 6 . | 9 7 5
+. . . | 5 . 7 | 2 . 6
+. . . | 8 . . | 1 4 .'''
+
+        grid = SudokuGrid.from_string(sudoku_str)
+
+        self.assertEqual(grid.grid[1][1].number, 6)
+        self.assertEqual(grid.grid[0][0].number, None)
+        self.assertEqual(grid.grid[6][6].number, 9)
+        self.assertEqual(grid.grid[6][0].number, 8)
+        self.assertEqual(grid.__str__(), sudoku_str)
+
+        sudoku_str = "s" + sudoku_str[1:]
+        with self.assertRaises(ValueError):
+            SudokuGrid.from_string(sudoku_str)
+
+        sudoku_str = ". . . | . . . 2 | 4 . ."
+
+        with self.assertRaises(ValueError):
+            SudokuGrid.from_string(sudoku_str)
 
 
 if __name__ == '__main__':

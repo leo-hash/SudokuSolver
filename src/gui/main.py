@@ -54,12 +54,8 @@ class SudokuFrontend(QObject):
             self.invalidNumberInput.emit(row, column, "Wrong Number entered")
             return False
 
-        try:
-            self._sudoku.grid[row][column].number = value
-        except ValueError:
-            print("Value entered is not a number between 1 and 9")
-            self.invalidNumberInput.emit(row, column, "Value entered is not a number between 1 and 9")
-            return False
+
+        self._sudoku.grid[row][column].number = value
 
         # make changes in QML
         self.cellChanged.emit(row, column, value)

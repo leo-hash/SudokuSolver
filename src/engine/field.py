@@ -97,4 +97,3 @@ if __name__ == '__main__':
     field.number = 1
     print(f"An instance of Field has a size of {asizeof.asizeof(field)} bytes.")
 
-    print(field.is_fixed)

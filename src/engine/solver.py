@@ -115,3 +115,21 @@ if __name__ == '__main__':
     end_time = time.perf_counter()
     elapsed_time = end_time - start_time
     print(f"Elapsed time: {elapsed_time:.3f} seconds")
+
+    # sudoku_str = '''
+    # . . . | . . 2 | 4 . .
+    # . 6 . | 4 7 . | 5 . 9
+    # 7 . 4 | . . . | 8 . .
+    # ------+-------+------
+    # 4 2 . | . 3 8 | . 5 1
+    # . . . | 2 . 6 | 7 9 .
+    # . . . | 9 . 4 | . 2 .
+    # ------+-------+------
+    # 8 . 2 | . 6 . | 9 7 5
+    # . . . | 5 . 7 | 2 . 6
+    # . . . | 8 . . | 1 4 .'''
+    #
+    # grid = SudokuGrid.from_string(sudoku_str)
+    # solver.random_order = False
+    # print(solver.solve(grid))
+

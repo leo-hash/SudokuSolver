@@ -3,6 +3,24 @@
 small project to implement a Sudoku solver
 using backtracking with Forward Checking
 
+## Installation
+```bash
+pip install -r requirements.txt
+```
+
+## Execution
+
+### Generator
+```bash
+python -m src.engine.generator
+```
+
+### GUI
+```bash
+python -m src.gui.main 
+```
+
+
 ## Principles and Algorithms used
 
 ### Heuristics:
@@ -25,4 +43,3 @@ Therefore, faster backtracking in a hopeless situation.
 Field: One small Field in a Sudoku-Grid with possible values of 1 to 9.
 
 Quadrant: 3x3 Fields, each digit can only occur once in a Quadrant. Each Grid consists of 3x3 Quadrants.  
-   

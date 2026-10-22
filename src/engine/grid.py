@@ -20,10 +20,40 @@ class SudokuGrid:
         ]
     )
 
-    def __post_init__(self):
-        for row in range(9):
-            for col in range(9):
-                self.grid[row][col] = Field()
+    """
+    Creates a SudokuGrid from an 81 character string
+    |, + and - are filtered out, so output of __str__ is a valid input
+    
+    :param sudoku_str: string of 81 characters with digits 1-9 and 0 or . for empty cells
+    """
+    @classmethod
+    def from_string(cls, sudoku_str: str) -> "SudokuGrid":
+        # delete |, + and -
+        sudoku_str = sudoku_str.translate(
+            str.maketrans("", "", "|+-")
+        )
+        # delete all whitespaces
+        sudoku_str = "".join(sudoku_str.split())
+
+        if len(sudoku_str) != 81:
+            raise ValueError("SudokuGrid string must have exactly 81 characters")
+
+        if any(char not in '0123456789.' for char in sudoku_str):
+            raise ValueError("SudokuGrid string must contain only digits 0-9 and '.'")
+
+        grid = cls()
+
+        for index, char in enumerate(sudoku_str):
+            if char in "0.":
+                continue
+
+            row, col = divmod(index, 9)
+            value = int(char)
+
+            grid.set_new_value(row, col, value)
+            grid.grid[row][col].is_fixed = True
+
+        return grid
 
 
     def set_new_value(self, row: int, col: int, value: int) -> set[tuple[int, int, int]]:
@@ -94,6 +124,13 @@ class SudokuGrid:
 
         return result
 
+
+    """
+    Calculates the quadrant of the given grid coordinates
+    
+    :return: 
+    (int, int): the quadrant of the given grid coordinates with a value between 0 and 2
+    """
     @staticmethod
     def get_quadrant_index(row_field: int, col_field: int) -> Tuple[int, int]:
         if row_field < 0 or row_field > 8:
@@ -130,7 +167,6 @@ class SudokuGrid:
 
             for col in range(9):
                 number = self.grid[row][col].number
-
                 values.append(str(number) if number is not None else ".")
 
                 if col in (2, 5):
