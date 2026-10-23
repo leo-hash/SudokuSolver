@@ -52,11 +52,10 @@ because they have the least degrees of freedom and are the most likely to fail.
 Therefore, faster backtracking in a hopeless situation. 
 
 ### Forward Checking:
-   - store possible values for each field 
-   and propagate for each new set value
+   - Store possible values for each field and propagate changes whenever a new value is set
    ("partial look ahead")
-   - **Aggressive Forward Checking:** if only 
-   one value possible, propagate til end
+   - **Aggressive Forward Checking:**While propagating a new value, look for fields with only 
+one possible value. Set those values and propagate the resulting changes in the same manner.
 
 ### Terminology
 

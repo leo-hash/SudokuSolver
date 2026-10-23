@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 
 
 ApplicationWindow {
@@ -21,7 +22,49 @@ ApplicationWindow {
         anchors.centerIn: parent
         spacing: 20
 
+
+        RowLayout {
+            spacing: 5
+
+
+
+            Button {
+                text: "new Game"
+
+                Layout.preferredWidth: 100
+                Layout.preferredHeight: 40
+
+                onClicked: {
+                    // TODO: implement
+                }
+            }
+
+            Button {
+                text: "Hint"
+
+                Layout.preferredWidth: 100
+                Layout.preferredHeight: 40
+
+                onClicked: {
+                    // TODO: implement
+                }
+            }
+
+            Button {
+                text: "export as png"
+
+                Layout.preferredWidth: 100
+                Layout.preferredHeight: 40
+
+                onClicked: {
+                    saveDialog.open()
+                }
+            }
+        }
+
+
         GridLayout {
+            id: sudokuBoard
 
             rows: 9
             columns: 9
@@ -185,6 +228,33 @@ ApplicationWindow {
                         selectedColumn >= 0) {
                         window.frontend.setValue(selectedRow, selectedColumn, 0)
                     }
+                }
+            }
+        }
+
+        FileDialog {
+            id: saveDialog
+
+            title: "Export as PNG"
+            fileMode: FileDialog.SaveFile
+            nameFilters: ["PNG (*.png)"]
+            defaultSuffix: "png"
+
+            onAccepted: {
+                const filePath = selectedFile
+
+                const started = sudokuBoard.grabToImage(function(result) {
+                    const saved = result.saveToFile(filePath)
+
+                    if (saved) {
+                        console.log("Sudoku saved:", filePath)
+                    } else {
+                        console.log("Error while saving PNG")
+                    }
+                }, Qt.size(1200, 1200))
+
+                if (!started) {
+                    console.log("Failed to start export")
                 }
             }
         }

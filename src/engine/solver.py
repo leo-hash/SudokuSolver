@@ -16,15 +16,6 @@ class SudokuSolver:
         self.random_order = random_order
 
 
-    """
-    Memory optimized implementation: 
-    instead of expanding the state (like in create_all_assignments)
-    only a successive state is generated and solved with a recursive call
-    """
-    def solve_recursive(self, sudoku: SudokuGrid):
-        raise NotImplementedError
-
-
     def solve(self, sudoku: SudokuGrid):
         stack  = [sudoku]
         finished = False    # not necessary, break in if statement does it better
@@ -67,6 +58,7 @@ class SudokuSolver:
                         return row, col
         return best
 
+
     def create_all_assignments(self, sudoku: SudokuGrid, row, col) -> list[SudokuGrid]:
         new_states = list[SudokuGrid]()
         num_list = list(sudoku.grid[row][col].pos_number)
@@ -80,7 +72,7 @@ class SudokuSolver:
 
             try:
                 forward = new_sudoku.set_new_value(row, col, num)
-                self.aggressive_forward_checking(forward)
+                self.aggressive_forward_checking(new_sudoku, forward)
             except Contradiction:
                 # Backtracking -> skip current digit -> previous state with different digit chosen
                 continue
@@ -90,18 +82,22 @@ class SudokuSolver:
         return new_states
 
 
-    def aggressive_forward_checking(self, forward: set[tuple[int, int, int]]):
+    def aggressive_forward_checking(self, sudoku:SudokuGrid, forward: set[tuple[int, int, int]]):
         if self.afc:
-            raise NotImplementedError
+            for row, col, value in forward:
+                forward = sudoku.set_new_value(row, col, value)
+                self.aggressive_forward_checking(sudoku, forward)
 
 
 if __name__ == '__main__':
-    start_time = time.perf_counter()
+
 
     sudoku_grid = SudokuGrid()
-    solver = SudokuSolver()
-    solver.random_order = True
+    solver = SudokuSolver(mrv=False, random_order=True)
+
+    start_time = time.perf_counter()
     sol = solver.solve(sudoku_grid)
+    end_time = time.perf_counter()
 
     if sol is not None:
         print("Solution found")
@@ -110,7 +106,7 @@ if __name__ == '__main__':
         print("Solution not found")
 
 
-    end_time = time.perf_counter()
+
     elapsed_time = end_time - start_time
     print(f"Elapsed time: {elapsed_time:.3f} seconds")
 
