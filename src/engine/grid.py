@@ -63,8 +63,11 @@ class SudokuGrid:
         if col < 0 or col > 8:
             raise ValueError(f'Field Collum {col} is out of bounds')
 
+        if value < 1 or value > 9:
+            raise ValueError(f'Field value {value} should be between 1 and 9')
+
         if value not in self.grid[row][col].pos_number:
-            raise Contradiction()
+            raise Contradiction(f'Value of ({row},{col}) is {value}, but pos_number only allows {self.grid[row][col].pos_number} ')
 
         self.grid[row][col].number = value
         return self.propagate(row, col, value)

@@ -26,8 +26,6 @@ class SudokuGenerator:
         field_list = list(itertools.chain.from_iterable(sudoku.grid))
         random.shuffle(field_list)
 
-        # TODO: test for partially set sudoku grids and
-
         for i in range(self.difficulty):
             field = field_list.pop()
             del field.number

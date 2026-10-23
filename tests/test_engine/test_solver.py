@@ -1,4 +1,5 @@
 import unittest
+from copy import deepcopy
 
 from src.engine import SudokuSolver, SudokuGrid
 
@@ -34,6 +35,21 @@ class TestSolver(unittest.TestCase):
             6 5 7 | 8 2 9 | 1 4 3"""
         )
 
+        self.sudoku2 = SudokuGrid.from_string(
+            '''
+                000|000|000
+                000|000|000
+                000|000|000
+                -----------
+                000|000|000
+                000|000|000
+                000|000|000
+                -----------
+                000|000|975
+                000|000|206
+                000|000|143'''
+        )
+
     def test_init(self):
         solver1 = SudokuSolver()
         self.assertEqual(False, solver1.random_order)
@@ -51,10 +67,46 @@ class TestSolver(unittest.TestCase):
         self.assertEqual(True, solver3.afc)
 
     def test_choose_next_field(self):
-        raise NotImplementedError
+        solver1 = SudokuSolver()
+
+        coord = solver1.choose_next_field(self.sudoku2)
+        self.assertEqual((7,7), coord )
+        self.sudoku2.set_new_value(7, 7, 8)
+
+        coord = solver1.choose_next_field(self.sudoku2)
+        self.assertEqual((0, 6), coord )
+        self.sudoku2.set_new_value(0, 6, 3)
+
+        coord = solver1.choose_next_field(self.sudoku2)
+        self.assertEqual((0, 7), coord )
+        self.sudoku2.set_new_value(0, 7, 1)
+
+        coord = solver1.choose_next_field(self.sudoku2)
+        self.assertEqual((1, 7), coord )
 
     def test_create_all_assignments(self):
-        raise NotImplementedError
+        solver1 = SudokuSolver()
+
+        test_cases = [
+            # (row, column, expected value)
+            (0, 0, [1, 3, 5, 9]),
+            (5, 4, [1, 5]),
+            (5, 3, [9])
+        ]
+
+        for row, col, expected_values in test_cases:
+            with self.subTest(row=row, col=col):
+                # create expected sudokuGrids
+                expected_assignments = []
+                for value in expected_values:
+                    expected = deepcopy(self.sudoku1)
+                    expected.set_new_value(row, col, value)
+                    expected_assignments.append(expected)
+
+                assignments = solver1.create_all_assignments(self.sudoku1, row, col)
+
+                self.assertEqual(expected_assignments, assignments)
+
 
     def test_solve(self):
         solver1 = SudokuSolver()

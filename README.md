@@ -20,6 +20,26 @@ python -m src.engine.generator
 python -m src.gui.main 
 ```
 
+## Tests 
+
+### Single Test
+```
+python -m unittest tests.test_engine.[test_file].[test_class].[test_method]
+```
+#### Example
+``` bash
+python -m unittest tests.test_engine.test_solver.TestSolver
+```
+
+``` bash
+python -m unittest tests.test_engine.test_solver.TestSolver.test_init
+```
+
+### Test Suite
+
+``` bash
+python -m tests.test_engine.suite_engine
+```
 
 ## Principles and Algorithms used
 

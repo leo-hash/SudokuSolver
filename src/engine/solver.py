@@ -65,13 +65,12 @@ class SudokuSolver:
                     else:
                         # without Minimum Remaining Values Heuristic
                         return row, col
-
         return best
 
     def create_all_assignments(self, sudoku: SudokuGrid, row, col) -> list[SudokuGrid]:
         new_states = list[SudokuGrid]()
-
         num_list = list(sudoku.grid[row][col].pos_number)
+
         if self.random_order:
             # shuffle num_list to create a different Sudoku puzzle each time (for puzzle generation)
             random.shuffle(num_list)
@@ -99,7 +98,6 @@ class SudokuSolver:
 if __name__ == '__main__':
     start_time = time.perf_counter()
 
-
     sudoku_grid = SudokuGrid()
     solver = SudokuSolver()
     solver.random_order = True
@@ -116,20 +114,5 @@ if __name__ == '__main__':
     elapsed_time = end_time - start_time
     print(f"Elapsed time: {elapsed_time:.3f} seconds")
 
-    # sudoku_str = '''
-    # . . . | . . 2 | 4 . .
-    # . 6 . | 4 7 . | 5 . 9
-    # 7 . 4 | . . . | 8 . .
-    # ------+-------+------
-    # 4 2 . | . 3 8 | . 5 1
-    # . . . | 2 . 6 | 7 9 .
-    # . . . | 9 . 4 | . 2 .
-    # ------+-------+------
-    # 8 . 2 | . 6 . | 9 7 5
-    # . . . | 5 . 7 | 2 . 6
-    # . . . | 8 . . | 1 4 .'''
-    #
-    # grid = SudokuGrid.from_string(sudoku_str)
-    # solver.random_order = False
-    # print(solver.solve(grid))
+
 
