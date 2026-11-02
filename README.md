@@ -62,3 +62,10 @@ one possible value. Set those values and propagate the resulting changes in the 
 Field: One small Field in a Sudoku-Grid with possible values of 1 to 9.
 
 Quadrant: 3x3 Fields, each digit can only occur once in a Quadrant. Each Grid consists of 3x3 Quadrants.  
+
+## Observations
+
+1. Running 'SudokuSolver.solve' with random_order=False seems to double the runtime in comparison to 
+'SudokuSolver.solve' with random_order=True. However, if mrv=True there is no difference. So some sort
+of randomness seems to be advantages, because mrv=True introduces some kind of randomness, too. 
+The next chosen field is not necessarily adjacent to the last one.

@@ -50,30 +50,32 @@ def run_n_benchmarks(solver: SudokuSolver, run_n_times: int, sudoku_list: list[S
 
 
 def both_benchmarks(solver: SudokuSolver, sudoku: SudokuGrid = None):
+    print(f'mrv:{solver.mrv} \t afc:{solver.afc} \t random_order:{solver.random_order}')
     measure = run_benchmark_memory(solver)
     print(measure)
 
     elapsed_time = run_benchmark(solver)
     print(f"Elapsed time: {elapsed_time:.3f} seconds")
+    print()
 
 
 
 if __name__ == '__main__':
-    solver1 = SudokuSolver()
-    solver2 = SudokuSolver(mrv=False)
-    solver3 = SudokuSolver(afc=True)
+    # TODO: random_order=True reduces runtime of solver2 from ~200ms to ~110ms, why??
+    # maybe something like quicksort, where randomisation improves runtime?
+    # mrv=True seems to eliminate disadvantage from random_order=False
+    # mrv=True faster than the two others with random_order=False, but no
+    # significant difference to mrv=random_order=True
 
-    print("Solver with mrv")
+    flag_random = False
+
+    solver1 = SudokuSolver(random_order=flag_random)
+    solver2 = SudokuSolver(mrv=False, random_order=flag_random)
+    solver3 = SudokuSolver(afc=True, mrv=False, random_order=flag_random)
+
+
     both_benchmarks(solver1)
-
-
-    print()
-    print("Solver without mrv")
     both_benchmarks(solver2)
-
-
-    print()
-    print("Solver with mrv and afc")
     both_benchmarks(solver3)
 
 

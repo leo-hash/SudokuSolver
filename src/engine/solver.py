@@ -89,11 +89,12 @@ class SudokuSolver:
                 self.aggressive_forward_checking(sudoku, forward)
 
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
+    # TODO: random_order=True reduces runtime of solver from ~200ms to ~110ms, why??
 
     sudoku_grid = SudokuGrid()
-    solver = SudokuSolver(mrv=False, random_order=True)
+    solver = SudokuSolver(mrv=False, afc=False, random_order=False)
 
     start_time = time.perf_counter()
     sol = solver.solve(sudoku_grid)
